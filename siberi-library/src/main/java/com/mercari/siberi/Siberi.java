@@ -48,7 +48,7 @@ public class Siberi {
         });
     }
 
-    public static void clearTestContent(){
+    public static void clearExperimentContent(){
         checkIfInitialized();
         sExecutor.execute(new Runnable() {
             @Override
@@ -58,7 +58,7 @@ public class Siberi {
         });
     }
 
-    public static void deleteTestContent(final String testName){
+    public static void deleteExperimentContent(final String testName){
         checkIfInitialized();
         sExecutor.execute(new Runnable() {
             @Override
