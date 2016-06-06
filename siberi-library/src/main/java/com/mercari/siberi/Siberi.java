@@ -25,6 +25,12 @@ public class Siberi {
         }
     }
 
+    public static void setUpCustomStorage(SiberiStorage customStorage) {
+        if (sStorage == null) {
+            sStorage = customStorage;
+        }
+    }
+
     public static void setExperimentContents(final JSONArray dataArray){
         checkIfInitialized();
         sExecutor.execute(new Runnable() {
