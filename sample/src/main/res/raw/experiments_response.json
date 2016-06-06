@@ -1,0 +1,18 @@
+{
+  "experiment_results":[
+    {
+      "name" : "test_001_change_button_color",
+      "variant" : 2,
+      "metadata" : {
+
+      }
+    },
+    {
+      "name" : "test_002_change_text",
+      "variant" : 2,
+      "metadata" : {
+        "text": "Share your thought about curry!"
+      }
+    }
+  ]
+}
