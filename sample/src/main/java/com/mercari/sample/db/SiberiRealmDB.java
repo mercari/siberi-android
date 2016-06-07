@@ -25,8 +25,8 @@ public class SiberiRealmDB implements SiberiStorage {
     }
     @Override
     public void insert(final String testName, final int variant, final JSONObject metaData) {
+        realm = Realm.getInstance(configuration);
         try {
-            realm = Realm.getInstance(configuration);
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -43,8 +43,8 @@ public class SiberiRealmDB implements SiberiStorage {
 
     @Override
     public ExperimentContent select(String testName) {
+        realm = Realm.getInstance(configuration);
         try {
-            realm = Realm.getInstance(configuration);
             RealmResults<ExperimentObject> results = realm.where(ExperimentObject.class).equalTo("testName", testName).findAll();
             if (results.size() > 0) {
                 ExperimentObject experimentObject = results.get(0);
@@ -66,8 +66,8 @@ public class SiberiRealmDB implements SiberiStorage {
 
     @Override
     public void delete(String testName) {
+        realm = Realm.getInstance(configuration);
         try {
-            realm = Realm.getInstance(configuration);
             final RealmResults<ExperimentObject> results = realm.where(ExperimentObject.class).equalTo("testName", testName).findAll();
             if (results.size() > 0) {
                 realm.executeTransaction(new Realm.Transaction() {
@@ -85,13 +85,15 @@ public class SiberiRealmDB implements SiberiStorage {
     @Override
     public void clear() {
         realm = Realm.getInstance(configuration);
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.delete(ExperimentObject.class);
-            }
-        });
-        realm.close();
-
+        try {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.delete(ExperimentObject.class);
+                }
+            });
+        } finally {
+            realm.close();
+        }
     }
 }
