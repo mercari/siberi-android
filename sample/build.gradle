@@ -9,6 +9,7 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 23
@@ -34,6 +35,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     apt project(':siberi-processor')
     compile project(':siberi-library')
-
     testCompile 'junit:junit:4.12'
 }
