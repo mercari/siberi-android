@@ -76,7 +76,7 @@ public class EmailInputActivity extends AppCompatActivity {
 
                     case 2:
                         // Test Group
-                        // Change text
+                        // Change text using meta data
                         JSONObject object = content.getMetaData();
                         try {
                             String text = object.getString("text");
