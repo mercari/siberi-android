@@ -1,7 +1,11 @@
 package com.mercari.siberi;
 
-/**
- * Created by tomoaki on 6/10/16.
- */
-public class SiberiTest {
+import android.app.Application;
+import android.test.ApplicationTestCase;
+
+
+public class SiberiTest extends ApplicationTestCase<Application> {
+    public SiberiTest() {
+        super(Application.class);
+    }
 }

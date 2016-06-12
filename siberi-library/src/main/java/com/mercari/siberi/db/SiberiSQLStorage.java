@@ -35,8 +35,8 @@ public class SiberiSQLStorage extends SQLiteOpenHelper implements SiberiStorage 
     public void onCreate(SQLiteDatabase db) {
         String query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                COLUMN_NAME + " TEXT," +
-                COLUMN_VARIANT + " INTEGER," +
+                COLUMN_NAME + " TEXT UNIQUE NOT NULL," +
+                COLUMN_VARIANT + " INTEGER NOT NULL," +
                 COLUMN_META + " TEXT" +
                 ")";
         db.execSQL(query);
@@ -55,13 +55,13 @@ public class SiberiSQLStorage extends SQLiteOpenHelper implements SiberiStorage 
         if(metaData != null) {
             contentValues.put(COLUMN_META, metaData.toString());
         }
-        mDb.insert(TABLE_NAME, null, contentValues);
+        mDb.insertOrThrow(TABLE_NAME, null, contentValues);
     }
 
     @Override
     public ExperimentContent select(String testName) {
         String query = "SELECT * FROM " + TABLE_NAME +
-                " WHERE " + COLUMN_NAME + " = ?";
+                " WHERE " + COLUMN_NAME + " = ? limit 1";
         Cursor cursor = mDb.rawQuery(query, new String[]{testName});
         if(cursor.getCount() == 0) return null;
         ExperimentContent content = convertFromCursor(cursor);
@@ -79,6 +79,12 @@ public class SiberiSQLStorage extends SQLiteOpenHelper implements SiberiStorage 
     public void clear() {
         String query = "DELETE FROM " + TABLE_NAME;
         mDb.execSQL(query);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        mDb.close();
     }
 
     ExperimentContent convertFromCursor(Cursor cursor) {
