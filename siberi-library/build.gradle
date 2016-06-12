@@ -36,4 +36,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    testCompile 'org.robolectric:robolectric:3.0'
+    testCompile 'org.hamcrest:hamcrest-library:1.3'
+    androidTestCompile 'junit:junit:4.12'
 }
