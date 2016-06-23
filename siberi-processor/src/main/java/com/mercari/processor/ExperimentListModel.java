@@ -26,12 +26,9 @@ public class ExperimentListModel {
     }
 
     public ExperimentListModel(TypeElement element, Elements elementUtils){
-        if(!element.getKind().isInterface()){
-            throw new IllegalDeclarationException("Experiment is declared as class. You should declare with interface");
-        }
         String packageName = getPackageName(elementUtils, element);
         String originalClassName = getClassName(element, packageName);
-        this.className = ClassName.get(packageName,originalClassName + "List");
+        this.className = ClassName.get(packageName,originalClassName + "Util");
         setExperimentsName(element);
     }
 

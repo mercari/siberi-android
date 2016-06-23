@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.mercari.sample.R;
 import com.mercari.sample.api.FakeApi;
-import com.mercari.sample.test.ExperimentsList;
+import com.mercari.sample.test.ExperimentsUtil;
 import com.mercari.siberi.Siberi;
 
 import org.json.JSONArray;
@@ -31,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
 
-        loadingTask.execute(ExperimentsList.getTestNameParams());
+        loadingTask.execute(ExperimentsUtil.getTestNameParams());
     }
 
     public void gotoNextActivity(){

@@ -11,10 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mercari.sample.R;
-import com.mercari.sample.test.ExperimentsList;
-import com.mercari.sample.test.ForExperiment;
+import com.mercari.sample.test.Experiments;
 import com.mercari.siberi.ExperimentContent;
 import com.mercari.siberi.Siberi;
+import com.mercari.siberi.annotations.ForExperiment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 public class EmailInputActivity extends AppCompatActivity {
 
-    @ForExperiment(ExperimentsList.TEST_002_CHANGE_TEXT)
+    @ForExperiment(Experiments.TEST_002_CHANGE_TEXT)
     TextView textView;
 
     public static Intent createIntent(Context context){
@@ -36,7 +36,7 @@ public class EmailInputActivity extends AppCompatActivity {
         setContentView(R.layout.activity_email_input);
         final Button button = (Button) findViewById(R.id.submit_button);
         textView = (TextView) findViewById(R.id.intro_message);
-        Siberi.runTest(ExperimentsList.TEST_001_CHANGE_BUTTON_COLOR.getTestName(), new Siberi.ExperimentRunner() {
+        Siberi.runTest(Experiments.TEST_001_CHANGE_BUTTON_COLOR, new Siberi.ExperimentRunner() {
             @Override
             public void run(ExperimentContent content) {
                 switch (content.getVariant()) {
@@ -60,7 +60,7 @@ public class EmailInputActivity extends AppCompatActivity {
             }
         });
 
-        Siberi.runTest(ExperimentsList.TEST_002_CHANGE_TEXT.getTestName(), new Siberi.ExperimentRunner() {
+        Siberi.runTest(Experiments.TEST_002_CHANGE_TEXT, new Siberi.ExperimentRunner() {
             @Override
             public void run(ExperimentContent content) {
                 switch (content.getVariant()) {
@@ -90,7 +90,7 @@ public class EmailInputActivity extends AppCompatActivity {
         });
     }
 
-    @ForExperiment(ExperimentsList.TEST_002_CHANGE_TEXT)
+    @ForExperiment(Experiments.TEST_002_CHANGE_TEXT)
     private void changeText(String text){
         Toast.makeText(this,"Experiment started",Toast.LENGTH_LONG).show();
         if(text != null) {
