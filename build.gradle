@@ -7,6 +7,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
         classpath "io.realm:realm-gradle-plugin:1.0.0"
+        classpath 'com.novoda:bintray-release:0.3.4'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -20,4 +21,20 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    bintrayUserProperty = ""
+    bintrayApiKeyProperty = ""
+    libraryVersion = '1.0.0'
+    if(file('private.properties').exists()){
+        def props = new Properties()
+        try {
+            props.load(new FileInputStream('private.properties'))
+            bintrayUserProperty = props.getProperty("BINTRAY_USER")
+            bintrayApiKeyProperty = props.getProperty("BINTRAY_KEY")
+        } catch (Exception e){
+            System.out.print("Missing private.properties, default values are set")
+        }
+    }
 }

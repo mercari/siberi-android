@@ -72,8 +72,10 @@ public class SiberiUnitTest {
     public void test3ClearExperimentTest() throws InterruptedException, JSONException {
         siberiStorage.insert("test_001_change_button_color", 2, createMetaData());
         final CountDownLatch latch = new CountDownLatch(1);
+
         final ExperimentContent result = new ExperimentContent("test");
         Siberi.clearExperimentContent();
+        Thread.sleep(1000); //wait for clear content task to end
         Siberi.runTest("test_001_change_button_color", new Siberi.ExperimentRunner() {
             @Override
             public void run(ExperimentContent content) {

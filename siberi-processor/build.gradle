@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'bintray-release'
 
 repositories {
     mavenCentral()
@@ -23,4 +24,16 @@ sourceSets {
             srcDirs = ['src/main/java', '../siberi-library/src/main/java']
         }
     }
+}
+
+publish {
+    userOrg = 'mercari-inc'
+    groupId = 'com.mercari'
+    artifactId = 'siberi-processor'
+    publishVersion = libraryVersion
+    desc = 'A/B testing library for mobile Android applications'
+    website = 'https://github.com/mercari/siberi-android'
+    licences = ['MIT']
+    bintrayUser = bintrayUserProperty.isEmpty() ? System.getenv('BINTRAY_USER') : bintrayUserProperty
+    bintrayKey = bintrayApiKeyProperty.isEmpty() ? System.getenv('BINTRAY_API_KEY') : bintrayApiKeyProperty
 }
