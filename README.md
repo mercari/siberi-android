@@ -30,12 +30,12 @@ buildscript {
 apply plugin: 'android-apt'
 
 dependencies{
-    compile 'com.mercari:siberi-library:{latest-version}'
+    compile 'com.mercari:siberi:{latest-version}'
     apt 'com.mercari:siberi-processor:{latest-version}'
 }
 ```
 
-{latest-version} is now: still under construction
+{latest-version} is now: [ ![Download](https://api.bintray.com/packages/mercari-inc/maven/siberi/images/download.svg) ](https://bintray.com/mercari-inc/maven/siberi/_latestVersion)
 
 ##2.Create an experiment list
 When creating an experiment list, make sure to:
@@ -51,32 +51,17 @@ public interface Experiments {
 }
 ```
 
-Compile the project and Siberi will generate Enums of experiments.
+Compile the project and Siberi will generate an utility class for experiments.
 
 ```
-public enum ExperimentsList {
-  TEST_001("test_001_change_button_color"),
+public class ExperimentsUtil {
+  public static final String TEST_001_CHANGE_BUTTON_COLOR = "test_001_change_button_color";
 
-  TEST_002("test_002_change_text");
-
-  private final String testName;
-
-  ExperimentsList(String testName) {
-    this.testName = testName;
-  }
-
-  public String getTestName() {
-    return this.testName;
-  }
+  public static final String TEST_002_CHANGE_TEXT = "test_002_change_text";
 
   public static String getTestNameParams() {
-    StringBuilder builder = new StringBuilder();
-    for (ExperimentsList list : values()) {
-      builder.append(list.getTestName());
-      builder.append(",");
-    }
-    builder.deleteCharAt(builder.length()-1);
-    return builder.toString();
+    String params[] = {};
+    return TextUtils.join(",", params);
   }
 }
 ```
@@ -109,7 +94,7 @@ protected void onCreate(Bundle savedInstanceState) {
             gotoNextActivity();
         }
     });
-    loadingTask.execute(ExperimentsList.getTestNameParams());
+    loadingTask.execute(ExperimentsUtil.getTestNameParams());
 }
 
 ...
@@ -187,7 +172,7 @@ Use `Siberi.runTest` method to start your experiment.
 
 
 ```
-Siberi.runTest(ExperimentsList.TEST_002.getTestName(), new ExperimentRunner() {
+Siberi.runTest(ExperimentsList.TEST_002, new ExperimentRunner() {
     @Override
     public void run(ExperimentContent content) {
         switch (content.getVariant()) {
@@ -215,10 +200,10 @@ Siberi.runTest(ExperimentsList.TEST_002.getTestName(), new ExperimentRunner() {
 If you have field values or methods that are only required for A/B testing, add `@ForExperiment` annotation so that you won't forget to remove them from your code once the experiment is finished.
 
 ```
-@ForExperiment(ExperimentsList.TEST_002)
+@ForExperiment(Experiments.TEST_002)
 TextView testTv;
 
-@ForExperiment(ExperimentsList.TEST_002)
+@ForExperiment(Experiments.TEST_002)
 private void changeText(String text){
     Toast.makeText(this,"Experiment started",Toast.LENGTH_LONG).show();
     if(text != null) {
@@ -248,7 +233,7 @@ public abstract class ExperimentRunnerWithAnalytics implements ExperimentRunner 
 And in each experiment:
 
 ```
-Siberi.runTest(ExperimentsList.TEST_002.getTestName(), new ExperimentRunnerWithAnalytics() {
+Siberi.runTest(ExperimentsList.TEST_002, new ExperimentRunnerWithAnalytics() {
     @Override
     public void run(ExperimentContent content) {
         super.run(content);
