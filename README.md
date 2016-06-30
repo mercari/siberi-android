@@ -1,4 +1,4 @@
-#Siberi for Android
+#Siberi for Android [![CircleCI](https://circleci.com/gh/mercari/siberi-android.svg?style=svg)](https://circleci.com/gh/mercari/siberi-android)
 
 Siberi makes it easy to start A/B testing for mobile Android applications.
 

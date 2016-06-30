@@ -1,0 +1,27 @@
+machine:
+  java:
+    version: oraclejdk8
+  environment:
+    ANDROID_HOME: /usr/local/android-sdk-linux
+    _JAVA_OPTIONS: "-Xms256m -Xmx1280m -XX:MaxPermSize=350m"
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1792m -Xms1792m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError"'
+
+general:
+  artifacts:
+    - "app/build/reports/tests"
+
+dependencies:
+  override:
+    - echo y | android update sdk --no-ui --all --filter extra-google-m2repository,extra-android-m2repository,build-tools-23.0.3,android-23
+    - echo $CI_PULL_REQUESTS
+    - echo $CI_PULL_REQUEST
+
+test:
+  post:
+      - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+      - find . -type f -regex ".*/test-results/*/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+  override:
+    - echo "start check."
+    - ./gradlew assemble -PdisablePreDex:
+        timeout: 1500
+    - ./gradlew --offline test
