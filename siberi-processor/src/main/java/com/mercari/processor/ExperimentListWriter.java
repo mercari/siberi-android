@@ -28,10 +28,10 @@ public class ExperimentListWriter {
         TypeSpec.Builder outClassBuilder = TypeSpec.classBuilder(model.getClassName().simpleName());
         outClassBuilder.addModifiers(Modifier.PUBLIC);
         HashMap<String, String> experimentsHashMap = model.getExperimentsHashMap();
-        Iterator entries = experimentsHashMap.entrySet().iterator();
+
         outClassBuilder
-                .addFields(createField(entries))
-                .addMethod(createGetParams(entries));
+                .addFields(createField(experimentsHashMap))
+                .addMethod(createGetParams(experimentsHashMap));
 
         TypeSpec outClass = outClassBuilder.build();
         JavaFile.builder(model.getClassName().packageName(), outClass)
@@ -39,7 +39,8 @@ public class ExperimentListWriter {
                 .writeTo(filer);
     }
 
-    private List<FieldSpec> createField(Iterator entries){
+    private List<FieldSpec> createField(HashMap<String,String> experimentsHashMap){
+        Iterator entries = experimentsHashMap.entrySet().iterator();
         List<FieldSpec> fieldSpecs = new ArrayList<>();
         while (entries.hasNext()){
             Map.Entry entry = (Map.Entry) entries.next();
@@ -53,15 +54,19 @@ public class ExperimentListWriter {
         return fieldSpecs;
     }
 
-    private MethodSpec createGetParams(Iterator entries){
+    private MethodSpec createGetParams(HashMap<String,String> experimentsHashMap){
+        Iterator entries = experimentsHashMap.entrySet().iterator();
         ClassName textUtils = ClassName.get("android.text", "TextUtils");
         MethodSpec.Builder method = MethodSpec.methodBuilder("getTestNameParams");
         method.returns(String.class)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
         StringBuilder builder = new StringBuilder("String params[] = {");
-        while (entries.hasNext()){
+        while (entries.hasNext()) {
             Map.Entry entry = (Map.Entry) entries.next();
-            builder.append((String)entry.getValue());
+            builder.append((String) entry.getKey());
+            if (entries.hasNext()) {
+                builder.append(",");
+            }
         }
         builder.append("}");
         method.addStatement(builder.toString())

@@ -60,7 +60,7 @@ public class ExperimentsUtil {
   public static final String TEST_002_CHANGE_TEXT = "test_002_change_text";
 
   public static String getTestNameParams() {
-    String params[] = {};
+    String params[] = {TEST_001_CHANGE_BUTTON_COLOR,TEST_002_CHANGE_TEXT};
     return TextUtils.join(",", params);
   }
 }
