@@ -3,6 +3,7 @@ package com.mercari.sample.activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.mercari.sample.R;
 import com.mercari.sample.api.FakeApi;
@@ -14,7 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SplashActivity extends AppCompatActivity {
-
+    private static final String TAG = "Siberi";
     private static FakeApi fakeApi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
                 gotoNextActivity();
             }
         });
-
+        Log.i(TAG, ExperimentsUtil.getTestNameParams());
         loadingTask.execute(ExperimentsUtil.getTestNameParams());
     }
 
