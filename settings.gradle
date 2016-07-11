@@ -1,1 +1,1 @@
-include ':sample', ':siberi-library', ':siberi-processor'
+include ':sample', ':siberi-library', ':siberi-processor', ':siberi-firebase-support'
