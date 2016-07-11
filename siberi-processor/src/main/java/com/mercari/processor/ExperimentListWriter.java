@@ -5,6 +5,8 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
@@ -31,7 +33,8 @@ public class ExperimentListWriter {
 
         outClassBuilder
                 .addFields(createField(experimentsHashMap))
-                .addMethod(createGetParams(experimentsHashMap));
+                .addMethod(createGetParams(experimentsHashMap))
+                .addMethod(createGetList(experimentsHashMap));
 
         TypeSpec outClass = outClassBuilder.build();
         JavaFile.builder(model.getClassName().packageName(), outClass)
@@ -71,6 +74,29 @@ public class ExperimentListWriter {
         builder.append("}");
         method.addStatement(builder.toString())
                 .addStatement("return $T.join(\",\", params)",textUtils);
+        return method.build();
+    }
+
+    private MethodSpec createGetList(HashMap<String,String> experimentsHashMap) {
+        ClassName string = ClassName.get(String.class);
+        ClassName list = ClassName.get("java.util", "List");
+        ClassName arrays = ClassName.get("java.util", "Arrays");
+        TypeName listOfString = ParameterizedTypeName.get(list, string);
+        Iterator entries = experimentsHashMap.entrySet().iterator();
+        MethodSpec.Builder method = MethodSpec.methodBuilder("getTestList");
+        method.returns(listOfString)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+        StringBuilder builder = new StringBuilder("String array[] = {");
+        while (entries.hasNext()) {
+            Map.Entry entry = (Map.Entry) entries.next();
+            builder.append((String) entry.getKey());
+            if (entries.hasNext()) {
+                builder.append(",");
+            }
+        }
+        builder.append("}");
+        method.addStatement(builder.toString())
+                .addStatement("return $T.asList(array)", arrays);
         return method.build();
     }
 }
