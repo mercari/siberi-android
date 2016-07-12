@@ -31,6 +31,7 @@ publish {
     groupId = 'com.mercari'
     artifactId = 'siberi-processor'
     publishVersion = libraryVersion
+    dryRun = false
     desc = 'A/B testing library for mobile Android applications'
     website = 'https://github.com/mercari/siberi-android'
     licences = ['MIT']
