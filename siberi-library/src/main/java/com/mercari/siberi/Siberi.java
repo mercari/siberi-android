@@ -1,6 +1,9 @@
 package com.mercari.siberi;
 
 import android.content.Context;
+import android.os.Handler;
+import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 
 import com.mercari.siberi.db.SiberiSQLStorage;
 import com.mercari.siberi.db.SiberiStorage;
@@ -36,13 +39,15 @@ public class Siberi {
         sExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                sStorage.clear();
-                for (int i = 0, l = dataArray.length(); i < l; i++) {
-                    JSONObject object = dataArray.optJSONObject(i);
-                    String test = object.optString("name");
-                    int variant = object.optInt("variant");
-                    JSONObject metaData = object.optJSONObject("metadata");
-                    sStorage.insert(test, variant, metaData);
+                synchronized (sStorage) {
+                    sStorage.clear();
+                    for (int i = 0, l = dataArray.length(); i < l; i++) {
+                        JSONObject object = dataArray.optJSONObject(i);
+                        String test = object.optString("name");
+                        int variant = object.optInt("variant");
+                        JSONObject metaData = object.optJSONObject("metadata");
+                        sStorage.insert(test, variant, metaData);
+                    }
                 }
             }
         });
@@ -68,12 +73,56 @@ public class Siberi {
         });
     }
 
-    public static void runTest(String testName, ExperimentRunner experimentRunner){
+    /**
+     * Run Test
+     * A test is executed on the thread where this method is called
+     * @param testName
+     * @param experimentRunner
+     */
+    public static void runTest(final String testName, final ExperimentRunner experimentRunner){
         checkIfInitialized();
-        ExperimentContent content = sStorage.select(testName);
-        if (content == null) {
-            content = new ExperimentContent(testName);
-        }
+        final Handler handler = new Handler();
+        sExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final ExperimentContent content = sStorage.select(testName);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        experimentRunner.run(content);
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Run Test asynchronously
+     * A test is executed on a worker thread.
+     * @param testName
+     * @param experimentRunner
+     */
+    @WorkerThread
+    public static void runTestOnWorkerThread(final String testName, final ExperimentRunner experimentRunner){
+        checkIfInitialized();
+        sExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final ExperimentContent content = sStorage.select(testName);
+                experimentRunner.run(content);
+            }
+        });
+    }
+
+    /**
+     * Run Test explicitly executed on a Ui thread
+     * @param testName
+     * @param experimentRunner
+     */
+    @UiThread
+    public static void runTestOnUiThread(final String testName, final ExperimentRunner experimentRunner){
+        checkIfInitialized();
+        final ExperimentContent content = sStorage.select(testName);
         experimentRunner.run(content);
     }
 
