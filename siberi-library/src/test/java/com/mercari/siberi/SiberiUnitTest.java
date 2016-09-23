@@ -10,12 +10,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.CountDownLatch;
 
 import static junit.framework.Assert.assertFalse;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,21 +37,21 @@ public class SiberiUnitTest {
         resetDB();
     }
 
-    //FIX: test fails when test1SetExperimentContents runs after test3ClearExperimentTest
     @Test
-    public void test1SetExperimentContents() throws JSONException{
+    public void testSetExperimentContents() throws InterruptedException, JSONException{
         siberiStorage.clear();
         JSONObject object = createExperimentData();
         Siberi.setExperimentContents(object.optJSONArray("experiment_results"));
+        Thread.sleep(500);
         ExperimentContent result = siberiStorage.select("test_001_change_button_color");
         assertThat(result.getTestName(),is("test_001_change_button_color"));
     }
 
     @Test
-    public void test2RunTest() throws InterruptedException, JSONException {
+    public void testRunTest() throws InterruptedException, JSONException {
         siberiStorage.clear();
         siberiStorage.insert("test_001_change_button_color", 2, createMetaData());
-        final CountDownLatch latch = new CountDownLatch(1);
+
         final ExperimentContent result = new ExperimentContent("test");
         Siberi.runTest("test_001_change_button_color", new Siberi.ExperimentRunner() {
             @Override
@@ -59,36 +59,97 @@ public class SiberiUnitTest {
                 result.setTestName(content.testName);
                 result.setVariant(content.variant);
                 result.setMetaData(content.metaData);
-                latch.countDown();
             }
         });
 
-        latch.await();
+        Thread.sleep(500); //wait for run test action to be finished
+        Robolectric.flushForegroundThreadScheduler();
+        Thread.sleep(500); //wait for applying test result
         assertThat(result.getTestName(),is("test_001_change_button_color"));
         assertThat(result.getVariant(), is(2));
+
     }
 
     @Test
-    public void test3ClearExperimentTest() throws InterruptedException, JSONException {
-        siberiStorage.insert("test_001_change_button_color", 2, createMetaData());
-        final CountDownLatch latch = new CountDownLatch(1);
+    public void testRunTestOnWorkerThread() throws InterruptedException, JSONException {
+        siberiStorage.clear();
+        siberiStorage.insert("test_002_change_text", 1, createMetaData());
 
         final ExperimentContent result = new ExperimentContent("test");
-        Siberi.clearExperimentContent();
-        Thread.sleep(1000); //wait for clear content task to end
-        Siberi.runTest("test_001_change_button_color", new Siberi.ExperimentRunner() {
+        Siberi.runTestOnWorkerThread("test_002_change_text", new Siberi.ExperimentRunner() {
             @Override
             public void run(ExperimentContent content) {
                 result.setTestName(content.testName);
                 result.setVariant(content.variant);
                 result.setMetaData(content.metaData);
-                latch.countDown();
             }
         });
 
-        latch.await();
+        Thread.sleep(500); //wait for applying test result
+        assertThat(result.getTestName(),is("test_002_change_text"));
+        assertThat(result.getVariant(), is(1));
+
+    }
+
+    @Test
+    public void testRunTestOnUiThread() throws InterruptedException, JSONException {
+        siberiStorage.clear();
+        siberiStorage.insert("test_003_change_value", 4, createMetaData());
+
+        final ExperimentContent result = new ExperimentContent("test");
+        Siberi.runTestOnUiThread("test_003_change_value", new Siberi.ExperimentRunner() {
+            @Override
+            public void run(ExperimentContent content) {
+                result.setTestName(content.testName);
+                result.setVariant(content.variant);
+                result.setMetaData(content.metaData);
+            }
+        });
+
+        Thread.sleep(500); //wait for applying test result
+        assertThat(result.getTestName(),is("test_003_change_value"));
+        assertThat(result.getVariant(), is(4));
+
+    }
+
+    @Test
+    public void testClearExperimentTest() throws InterruptedException, JSONException {
+        siberiStorage.insert("test_001_change_button_color", 2, createMetaData());
+
+        final ExperimentContent result = new ExperimentContent("test");
+        Siberi.clearExperimentContent();
+        Thread.sleep(500); //wait for clear content task to end
+
+        Siberi.ExperimentRunner runner = new Siberi.ExperimentRunner() {
+            @Override
+            public void run(ExperimentContent content) {
+                result.setTestName(content.testName);
+                result.setVariant(content.variant);
+                result.setMetaData(content.metaData);
+            }
+        };
+
+        Siberi.runTest("test_001_change_button_color", runner);
+        Thread.sleep(500); //wait for run test action to be finished
+        Robolectric.flushForegroundThreadScheduler();
+        Thread.sleep(500); //wait for applying test result
         assertThat(result.getTestName(),is("test_001_change_button_color"));
         assertFalse(result.containsVariant());
+    }
+
+    @Test
+    public void testDeleteExperimentContent() throws InterruptedException, JSONException {
+        siberiStorage.clear();
+        siberiStorage.insert("test_003_change_value", 4, createMetaData());
+
+        Thread.sleep(500); //wait for applying test result
+        Siberi.deleteExperimentContent("test_003_change_value");
+        Thread.sleep(500); //wait for applying test result
+        final ExperimentContent result = siberiStorage.select("test_003_change_value");
+
+        Thread.sleep(500); //wait for applying test result
+        assertThat(result.getTestName(),is("test_003_change_value"));
+        assertThat(result.containsVariant(), is(false));
     }
 
     private void resetDB(){

@@ -76,7 +76,7 @@ public class SiberiSQLStorage extends SQLiteOpenHelper implements SiberiStorage 
     @Override
     public void delete(String testName) {
         String query = "DELETE FROM " + TABLE_NAME +
-                " WHERE " + COLUMN_NAME + " = " + testName;
+                " WHERE " + COLUMN_NAME + " = '" + testName + "'";
         mDb.execSQL(query);
     }
 
