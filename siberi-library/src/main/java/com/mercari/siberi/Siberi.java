@@ -115,7 +115,8 @@ public class Siberi {
     }
 
     /**
-     * Run Test explicitly executed on a Ui thread
+     * Run Test explicitly executed on a Ui thread.
+     * Note that this method may block the UI thread.
      * @param testName
      * @param experimentRunner
      */
