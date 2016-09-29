@@ -21,7 +21,7 @@ dependencies {
 sourceSets {
     main {
         java {
-            srcDirs = ['src/main/java', '../siberi-library/src/main/java/com/mercari/siberi/annotations/']
+            srcDirs = ['src/main/java', '../siberi-library/src/main/java']
         }
     }
 }

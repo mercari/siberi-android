@@ -2,8 +2,7 @@ package com.mercari.siberi;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
+import android.os.Looper;
 
 import com.mercari.siberi.db.SiberiSQLStorage;
 import com.mercari.siberi.db.SiberiStorage;
@@ -102,7 +101,6 @@ public class Siberi {
      * @param testName
      * @param experimentRunner
      */
-    @WorkerThread
     public static void runTestOnWorkerThread(final String testName, final ExperimentRunner experimentRunner){
         checkIfInitialized();
         sExecutor.execute(new Runnable() {
@@ -115,14 +113,14 @@ public class Siberi {
     }
 
     /**
-     * Run Test explicitly executed on a Ui thread.
+     * Run Test explicitly executed on a UI thread.
      * Note that this method may block the UI thread.
      * @param testName
      * @param experimentRunner
      */
-    @UiThread
     public static void runTestOnUiThread(final String testName, final ExperimentRunner experimentRunner){
         checkIfInitialized();
+        checkUiThread();
         final ExperimentContent content = sStorage.select(testName);
         experimentRunner.run(content);
     }
@@ -130,6 +128,12 @@ public class Siberi {
     private static void checkIfInitialized() {
         if (sStorage == null) {
             throw new IllegalStateException("Siberi is not initialized!!");
+        }
+    }
+
+    private static void checkUiThread() {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            throw new IllegalStateException("this is not UIThread");
         }
     }
 
