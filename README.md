@@ -172,14 +172,14 @@ The response should be rendered as shown below:
 There are 3 ways to run your experiment.
 
 1. `Siberi.runTest`
-A test is executed on the thread where this method is called.
+A test is executed on the thread where this method is called. A test result returns asynchronously.
 
 2. `Siberi.runTestOnWorkerThread`
-A test is executed on a worker thread. Use this method for experiments that is executed asynchronously
+A test is executed on a worker thread. Use this method for experiments that is executed asynchronously.
 Ex. Update DB, Network Request depending on a variant
 
-1. `Siberi.runTestOnUiThread`
-This method selects data from a storage and executes test on a UI thread. In some cases, you want to apply an experiment's variant synchronously and then do succeeding tasks. This method is useful in that case. 
+3. `Siberi.runTestOnUiThread`
+A test is explicitly executes on a UI thread.  A test result returns synchronously. In some cases, you want to run experiments in order. This method is useful in that case.
 Note that this method may block the UI thread.
 
 Below is an example to use `Siberi.runTest` method to start your experiment.
