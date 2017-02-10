@@ -27,7 +27,7 @@ public class Siberi {
         }
     }
 
-    private static void setCallback(Callback callback) {
+    public static void setCallback(Callback callback) {
         Siberi.callback = callback;
     }
 
