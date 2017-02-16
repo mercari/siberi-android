@@ -63,7 +63,10 @@ public class SiberiSQLStorage extends SQLiteOpenHelper implements SiberiStorage 
         String query = "SELECT * FROM " + TABLE_NAME +
                 " WHERE " + COLUMN_NAME + " = ? limit 1";
         Cursor cursor = mDb.rawQuery(query, new String[]{testName});
-        if (cursor.getCount() == 0) return null;
+        if (cursor.getCount() == 0) {
+            cursor.close();
+            return null;
+        }
         ExperimentContent content = convertFromCursor(cursor);
         cursor.close();
         return content;
