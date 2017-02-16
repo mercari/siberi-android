@@ -65,7 +65,7 @@ public class SiberiSQLStorage extends SQLiteOpenHelper implements SiberiStorage 
         Cursor cursor = mDb.rawQuery(query, new String[]{testName});
         if (cursor.getCount() == 0) {
             cursor.close();
-            return null;
+            return new ExperimentContent(testName);
         }
         ExperimentContent content = convertFromCursor(cursor);
         cursor.close();
