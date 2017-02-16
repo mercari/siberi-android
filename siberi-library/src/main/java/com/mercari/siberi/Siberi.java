@@ -17,12 +17,18 @@ public class Siberi {
     private static SiberiStorage sStorage;
     private static ExecutorService sExecutor = Executors.newSingleThreadExecutor();
 
+    private static Callback callback;
+
     private Siberi(){}
 
     public static void setUp(Context context) {
         if (sStorage == null) {
             sStorage = new SiberiSQLStorage(context);
         }
+    }
+
+    public static void setCallback(Callback callback) {
+        Siberi.callback = callback;
     }
 
     public static void setUpCustomStorage(SiberiStorage customStorage) {
@@ -43,6 +49,10 @@ public class Siberi {
                     int variant = object.optInt("variant");
                     JSONObject metaData = object.optJSONObject("metadata");
                     sStorage.insert(test, variant, metaData);
+                }
+
+                if (callback != null) {
+                    callback.hasSetExperimentContents();
                 }
             }
         });
@@ -87,4 +97,7 @@ public class Siberi {
         void run(ExperimentContent content);
     }
 
+    public interface Callback {
+        void hasSetExperimentContents();
+    }
 }
