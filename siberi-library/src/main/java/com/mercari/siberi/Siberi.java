@@ -49,10 +49,10 @@ public class Siberi {
                     int variant = object.optInt("variant");
                     JSONObject metaData = object.optJSONObject("metadata");
                     sStorage.insert(test, variant, metaData);
+                }
 
-                    if (callback != null) {
-                        callback.hasSetExperimentContents();
-                    }
+                if (callback != null) {
+                    callback.hasSetExperimentContents();
                 }
             }
         });
