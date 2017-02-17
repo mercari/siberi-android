@@ -65,17 +65,18 @@ public class SiberiSQLStorage extends SQLiteOpenHelper implements SiberiStorage 
         Cursor cursor = mDb.rawQuery(query, new String[]{testName});
         if (cursor.getCount() == 0) {
             cursor.close();
-            return null;
+            return new ExperimentContent(testName);
         }
         ExperimentContent content = convertFromCursor(cursor);
         cursor.close();
+
         return content;
     }
 
     @Override
     public void delete(String testName) {
         String query = "DELETE FROM " + TABLE_NAME +
-                " WHERE " + COLUMN_NAME + " = " + testName;
+                " WHERE " + COLUMN_NAME + " = '" + testName + "'";
         mDb.execSQL(query);
     }
 
