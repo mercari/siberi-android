@@ -25,3 +25,5 @@ dependencies {
     compile "com.google.firebase:firebase-core:${fire_base}"
     compile "com.google.firebase:firebase-config:${fire_base}"
 }
+
+apply plugin: 'com.google.gms.google-services'

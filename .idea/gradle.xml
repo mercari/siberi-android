@@ -9,7 +9,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/sample" />
-            <option value="$PROJECT_DIR$/siberi-firebase-support" />
             <option value="$PROJECT_DIR$/siberi-library" />
             <option value="$PROJECT_DIR$/siberi-processor" />
           </set>
