@@ -26,7 +26,7 @@ task clean(type: Delete) {
 ext {
     bintrayUserProperty = ""
     bintrayApiKeyProperty = ""
-    libraryVersion = '1.0.1'
+    libraryVersion = '1.0.2'
     if(file('private.properties').exists()){
         def props = new Properties()
         try {
