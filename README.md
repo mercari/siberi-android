@@ -1,4 +1,4 @@
-#Siberi for Android [![CircleCI](https://circleci.com/gh/mercari/siberi-android.svg?style=svg)](https://circleci.com/gh/mercari/siberi-android)
+# Siberi for Android [![CircleCI](https://circleci.com/gh/mercari/siberi-android.svg?style=svg)](https://circleci.com/gh/mercari/siberi-android)
 
 ![logo](https://raw.githubusercontent.com/mercari/siberi-android/master/image/siberi_logo.png)  
 Siberi makes it easy to start A/B testing for mobile Android applications.
@@ -13,8 +13,8 @@ Siberi makes it easy to start A/B testing for mobile Android applications.
   Develop test runners and experimental data storage.
 
 
-#Getting started
-##1.Setup
+# Getting started
+## 1.Setup
 Depend via Gradle:
 
 ```
@@ -38,7 +38,7 @@ dependencies{
 
 {latest-version} is now: [ ![Download](https://api.bintray.com/packages/mercari-inc/maven/siberi/images/download.svg) ](https://bintray.com/mercari-inc/maven/siberi/_latestVersion)
 
-##2.Create an experiment list
+## 2.Create an experiment list
 When creating an experiment list, make sure to:
 
 - **Declare an interface.** If you declare a class, the compilation will fail. The interface class will prevent accidently calling the list in your code.
@@ -67,7 +67,7 @@ public class ExperimentsUtil {
 }
 ```
 
-##3.Initialize Siberi in your Application class
+## 3.Initialize Siberi in your Application class
 
 ```
 public class MyApplication extends Application {
@@ -79,7 +79,7 @@ public class MyApplication extends Application {
 }
 ```
 
-##4.Request experiments from your server
+## 4.Request experiments from your server
 
 When the app is launched, Siberi should request experimental data from your server (Ex. Splash screen). Below is a simple example of how to fetch data and how to store it into Siberi. Please see a [sample project]() for detail.
 
@@ -168,7 +168,7 @@ The response should be rendered as shown below:
 `variant` will allocate each test group to different devices.
 `metadata` is used when you want to change the content of an experiment dynamically from your server. It is not required.
 
-##5.Run your experiment
+## 5.Run your experiment
 There are 3 ways to run your experiment.
 
 1. `Siberi.runTest`
@@ -226,8 +226,8 @@ private void changeText(String text){
 }
 ```
 
-#Tips
-##Sending Logs with Siberi
+# Tips
+## Sending Logs with Siberi
 When you want to send logs each time you start A/B testing, you can avoid a boilerplate code by Overriding `ExperimentRunner`.
 For example:
 
@@ -256,7 +256,7 @@ Siberi.runTest(ExperimentsList.TEST_002, new ExperimentRunnerWithAnalytics() {
 }    
 ```
 
-##Using custom storage
+## Using custom storage
 If you would like to use a storage other than SQLite(ex. Realm), you can do so by implementing `SiberiStorage` and creating a new storage class.
 
 ```
@@ -278,13 +278,13 @@ public class MyApplication extends Application {
 }
 ```
 
-#Contribution
+# Contribution
 
 Please read the CLA below carefully before submitting your contribution.  
 
 https://www.mercari.com/cla/
 
-#License
+# License
 
 Copyright 2014-2016 Mercari, Inc.
 
